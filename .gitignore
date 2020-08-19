@@ -1,0 +1,6 @@
+.DS_Store
+ios/RCTKcdsa.xcodeproj/xcuserdata/*
+ios/RCTKcdsa.xcodeproj/project.xcworkspace/*
+android/.idea/*
+android/.gradle/*
+android/build/*

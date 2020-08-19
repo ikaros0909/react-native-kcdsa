@@ -1,0 +1,29 @@
+{
+    "name": "react-native-kcdsa",
+    "version": "0.9.1",
+    "description": "KCDSA 대한민국 표준 전자서명",
+    "main": "index.js",
+    "types": "index.d.ts",
+    "author": "nixstory@gmail.com",
+    "license": "MIT",
+    "keywords": [
+        "react-native",
+        "ios",
+        "android",
+        "kcdsa",
+        "ec-kcdsa",
+        "대한민국",
+        "전자서명"
+    ],
+    "homepage": "https://github.com/reactspring/react-native-kcdsa",
+    "bugs": {
+        "url": "https://github.com/reactspring/react-native-kcdsa/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/reactspring/react-native-kcdsa.git"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    }
+}

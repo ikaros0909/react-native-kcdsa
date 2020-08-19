@@ -1,7 +1,7 @@
 {
     "name": "react-native-kcdsa",
-    "version": "0.9.1",
-    "description": "KCDSA 대한민국 표준 전자서명",
+    "version": "0.9.2",
+    "description": "대한민국 표준 전자서명 알고리즘 - KCDSA",
     "main": "index.js",
     "types": "index.d.ts",
     "author": "nixstory@gmail.com",

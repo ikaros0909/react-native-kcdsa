@@ -1,6 +1,6 @@
-# React Native AES 128/192/256
+# KCDSA
 
-AES encryption/decryption for react-native
+대한민국 표준 전자서명 알고리즘
 
 ## Installation
 

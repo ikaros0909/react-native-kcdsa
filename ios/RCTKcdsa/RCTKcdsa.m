@@ -42,7 +42,7 @@ RCT_EXPORT_METHOD(KISA_KCDSA_sign:(NSString *)msg (NSInteger)hash
                   rejecter:(RCTPromiseRejectBlock)reject) {
     
     NSError *error = nil;
-    int msg_length = [msg length];
+    NSInteger msg_length = [msg length];
     KISA_KCDSA_sign(kcdsa, [CommonUti fromHex:msg], msg_length, sig, &siglen, SHA224, kInput, 20);
     
     if (sig == nil) {
@@ -57,9 +57,9 @@ RCT_EXPORT_METHOD(KISA_KCDSA_verify:(NSString *)msg salt:(NSString *)sign (NSInt
                   rejecter:(RCTPromiseRejectBlock)reject) {
     
     NSError *error = nil;
-    int msg_length = [msg length];
-    int sign_length = [sign length];
-    int ret = KISA_KCDSA_verify(kcdsa, [CommonUti fromHex:msg], msg_length, [CommonUti fromHex:sign], sign_length, SHA224);
+    NSInteger msg_length = [msg length];
+    NSInteger sign_length = [sign length];
+    NSInteger ret = KISA_KCDSA_verify(kcdsa, [CommonUti fromHex:msg], msg_length, [CommonUti fromHex:sign], sign_length, SHA224);
     
     //  - 0 : 전자서명 검증 성공
     //  - 1 : 전자서명 검증 실패

@@ -4,11 +4,11 @@
 //  TaeHeun Lee (nixstory@gmail.com)
 
 #import "RCTKcdsa.h"
-#import "AesCrypt.h"
+#import "./lib/CommonUtil.h"
 
 @implementation RCTKcdsa
 
-#import "kcdsa.h"
+#import "./lib/kcdsa.h"
 
 KISA_KCDSA *kcdsa = NULL;
 
@@ -21,13 +21,15 @@ unsigned int siglen;
 
 RCT_EXPORT_MODULE()
     
-RCT_EXPORT_METHOD(KISA_KCDSA_GenerateKeyPair:(NSInteger)hash
+RCT_EXPORT_METHOD(_KISA_KCDSA_GenerateKeyPair:(NSInteger)hash
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     
     KISA_KCDSA_CreateObject(&kcdsa);
-    KISA_KCDSA_GenerateParameters(plen, qlen, kcdsa, SHA224);
+    KISA_KCDSA_GenerateParameters(plen, qlen, kcdsa, hash);
 
+    // KCDSA 알고리즘의 키 쌍(개인키, 공개키) 생성 함수
+    // hash (1:SHA_224, 2:SHA_256)
     NSInteger ret = KISA_KCDSA_GenerateKeyPair(kcdsa, pbSrc, 160, qlen, SHA224);
     
     //  - 0 : 파라미터 생성 성공
@@ -37,36 +39,42 @@ RCT_EXPORT_METHOD(KISA_KCDSA_GenerateKeyPair:(NSInteger)hash
     resolve(ret);
 }
 
-RCT_EXPORT_METHOD(KISA_KCDSA_sign:(NSString *)msg (NSInteger)hash
+RCT_EXPORT_METHOD(_KISA_KCDSA_sign:(NSString *)msg (NSInteger)hash
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     
     NSError *error = nil;
     NSInteger msg_length = [msg length];
-    KISA_KCDSA_sign(kcdsa, [CommonUti fromHex:msg], msg_length, sig, &siglen, SHA224, kInput, 20);
+
+    // KCDSA 알고리즘 전자서명 생성 함수
+    // hash (1:SHA_224, 2:SHA_256)
+    KISA_KCDSA_sign(kcdsa, [CommonUtil fromHex:msg], msg_length, sig, &siglen, hash, kInput, 20);
     
     if (sig == nil) {
         reject(@"sign_fail", @"Sign failed", error);
     } else {
-        resolve([CommonUti toHex:sig]);
+        // 전자서명값
+        resolve([CommonUtil toHex:sig]);
     }
 }
 
-RCT_EXPORT_METHOD(KISA_KCDSA_verify:(NSString *)msg salt:(NSString *)sign (NSInteger)hash
+RCT_EXPORT_METHOD(_KISA_KCDSA_verify:(NSString *)msg sign:(NSString *)sign (NSInteger)hash
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     
     NSError *error = nil;
     NSInteger msg_length = [msg length];
     NSInteger sign_length = [sign length];
-    NSInteger ret = KISA_KCDSA_verify(kcdsa, [CommonUti fromHex:msg], msg_length, [CommonUti fromHex:sign], sign_length, SHA224);
+
+    // KCDSA 알고리즘 전자서명 검증 함수
+    // hash (1:SHA_224, 2:SHA_256)
+    NSInteger ret = KISA_KCDSA_verify(kcdsa, [CommonUtil fromHex:msg], msg_length, [CommonUtil fromHex:sign], sign_length, hash);
     
     //  - 0 : 전자서명 검증 성공
     //  - 1 : 전자서명 검증 실패
     //  - 2 : 치명적인 오류 발생
     //  - 3 : 유효하지 않은 KCDSA 구조체 포인터 입력
     //  - 4 : 유효하지 않은 알고리즘 파라미터 입력
-    
     resolve(ret);
 }
 

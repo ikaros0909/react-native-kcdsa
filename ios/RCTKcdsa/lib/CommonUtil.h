@@ -8,5 +8,6 @@
 
 @interface CommonUtil : NSObject
 + (NSString *) toHex: (NSData *)nsdata;
-+ (NSString *) randomKey: (NSInteger)length;
++ (NSData *) fromHex: (NSString *)string;
+
 @end

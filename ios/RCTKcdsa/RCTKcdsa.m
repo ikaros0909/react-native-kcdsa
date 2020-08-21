@@ -5,10 +5,9 @@
 
 #import "RCTKcdsa.h"
 #import "./lib/CommonUtil.h"
+#import "./lib/kcdsa.h"
 
 @implementation RCTKcdsa
-
-#import "./lib/kcdsa.h"
 
 KISA_KCDSA *kcdsa = NULL;
 

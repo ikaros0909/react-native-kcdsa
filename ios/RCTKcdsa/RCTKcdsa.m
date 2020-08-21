@@ -29,7 +29,8 @@ RCT_EXPORT_METHOD(_KISA_KCDSA_GenerateKeyPair:(NSInteger)hash
 
     // KCDSA 알고리즘의 키 쌍(개인키, 공개키) 생성 함수
     // hash (1:SHA_224, 2:SHA_256)
-    NSInteger ret = KISA_KCDSA_GenerateKeyPair(kcdsa, pbSrc, 160, qlen, SHA224);
+    
+    unsigned int ret = KISA_KCDSA_GenerateKeyPair(kcdsa, pbSrc, 160, qlen, SHA224);
     
     //  - 0 : 파라미터 생성 성공
     //  - 2 : 치명적인 오류 발생
@@ -41,13 +42,15 @@ RCT_EXPORT_METHOD(_KISA_KCDSA_GenerateKeyPair:(NSInteger)hash
 RCT_EXPORT_METHOD(_KISA_KCDSA_sign:(NSString *)msg hash:(NSInteger)hash
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    
-    NSError *error = nil;
-    NSInteger msg_length = [msg length];
-
     // KCDSA 알고리즘 전자서명 생성 함수
     // hash (1:SHA_224, 2:SHA_256)
-    KISA_KCDSA_sign(kcdsa, [CommonUtil fromHex:msg], msg_length, sig, &siglen, hash, kInput, 20);
+    
+    NSError *error = nil;
+
+    NSData *n_msg = [msg dataUsingEncoding:NSUTF8StringEncoding];
+    NSInteger msg_length = n_msg.length;
+    
+    KISA_KCDSA_sign(kcdsa, n_msg, msg_length, sig, &siglen, hash, kInput, 20);
     
     if (sig == nil) {
         reject(@"sign_fail", @"Sign failed", error);
@@ -60,14 +63,18 @@ RCT_EXPORT_METHOD(_KISA_KCDSA_sign:(NSString *)msg hash:(NSInteger)hash
 RCT_EXPORT_METHOD(_KISA_KCDSA_verify:(NSString *)msg sign:(NSString *)sign hash:(NSInteger)hash
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
-    
-    NSError *error = nil;
-    NSInteger msg_length = [msg length];
-    NSInteger sign_length = [sign length];
-
     // KCDSA 알고리즘 전자서명 검증 함수
     // hash (1:SHA_224, 2:SHA_256)
-    NSInteger ret = KISA_KCDSA_verify(kcdsa, [CommonUtil fromHex:msg], msg_length, [CommonUtil fromHex:sign], sign_length, hash);
+
+    NSError *error = nil;
+
+    NSData *n_msg = [msg dataUsingEncoding:NSUTF8StringEncoding];
+    NSInteger msg_length = n_msg.length;
+    
+    NSData *n_sign = [sign dataUsingEncoding:NSUTF8StringEncoding];
+    NSInteger sign_length = n_sign.length;
+
+    unsigned int ret = KISA_KCDSA_verify(kcdsa, n_msg, msg_length, n_sign, sign_length, hash);
     
     //  - 0 : 전자서명 검증 성공
     //  - 1 : 전자서명 검증 실패

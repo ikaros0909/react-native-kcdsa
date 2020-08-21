@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name          = 'react-native-kcdsa'
-  s.version       = '0.9.6'
+  s.version       = '0.9.8'
   s.summary       = 'KCDSA'
   s.author        = "nixstory@gmail.com"
   s.license       = 'MIT'

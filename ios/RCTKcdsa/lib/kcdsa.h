@@ -18,17 +18,6 @@ extern "C" {
 #define VERIFY_SUCCESS 1
 #define VERIFY_FAIL 0
 
-	//extern kcdsa *Parameter;
-
-#define ROTL_WORD(x, n) _lrotl((x), (n))
-#define ROTR_WORD(x, n) _lrotr((x), (n))
-
-////////	reverse the byte order of WORD(WORD:4-bytes integer) and WORD.
-#define ENDIAN_REVERSE_WORD(dwS)	( (ROTL_WORD((dwS),  8) & 0x00ff00ff)	\
-	| (ROTL_WORD((dwS), 24) & 0xff00ff00))
-
-#define BIG_W2B(W, B)		*(unsigned int *)(B) = ENDIAN_REVERSE_WORD(W)
-
 	typedef struct kcdsa_structure {
 		BIGNUM 		*KCDSA_P;		//	prime(1024 + 128i bits i=0..8)
 		BIGNUM 		*KCDSA_Q;		//	subprime(128 + 32j bits j=0..4)
@@ -38,7 +27,8 @@ extern "C" {
 		unsigned int	Count;			//	Prime Type ID
 		unsigned int	SeedLen;		//	in BYTEs
 	} KISA_KCDSA;
-
+  
+    void BIG_W2B(unsigned int W, unsigned int *B);
 	unsigned int KISA_KCDSA_CreateObject(KISA_KCDSA	**kcdsa);
 	unsigned int KCDSA_PRNG_SHA_224(SHA224_ALG_INFO	*SHA224_AlgInfo, unsigned char *pbSrc, unsigned int dSrcByteLen, unsigned char *pbDst, unsigned int dDstBitLen);
 	unsigned int KCDSA_PRNG_SHA_256(SHA256_ALG_INFO	*SHA256_AlgInfo, unsigned char *pbSrc, unsigned int dSrcByteLen, unsigned char *pbDst, unsigned int dDstBitLen);

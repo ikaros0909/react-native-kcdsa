@@ -5,6 +5,21 @@
 #include <time.h>
 #include "kcdsa.h"
 
+unsigned int ROTL_WORD(unsigned int x, unsigned int n)
+{
+    return (((unsigned int)x << n) | ((unsigned int)x >> (32-n)));
+}
+
+unsigned int ENDIAN_REVERSE_WORD(unsigned int dwS)
+{
+    return ((ROTL_WORD(dwS, 8) & 0x00ff00ff) | (ROTL_WORD(dwS, 24) & 0xff00ff00));
+}
+
+void BIG_W2B(unsigned int W, unsigned int *B)
+{
+    *B = ENDIAN_REVERSE_WORD(W);
+}
+
 unsigned int KISA_KCDSA_CreateObject(KISA_KCDSA	**kcdsa)
 {
 	int i = 0;
@@ -22,7 +37,7 @@ unsigned int KISA_KCDSA_CreateObject(KISA_KCDSA	**kcdsa)
 	if ((BN_Key->KCDSA_P = CreateBigNum(tt + 1)) == NULL)	goto LABEL_END0;
 	if ((BN_Key->KCDSA_G = CreateBigNum(tt + 1)) == NULL)	goto LABEL_END0;
 	if ((BN_Key->KCDSA_y = CreateBigNum(tt + 1)) == NULL)	goto LABEL_END0;
-	for (i = 0; i < (signed)(tt + 1); i++)
+	for (i = 0; i < (tt + 1); i++)
 	{
 		BN_Key->KCDSA_P->pData[i] = 0;
 		BN_Key->KCDSA_G->pData[i] = 0;
@@ -31,7 +46,7 @@ unsigned int KISA_KCDSA_CreateObject(KISA_KCDSA	**kcdsa)
 	tt = (256 - 1) / BitsInDIGIT + 1;
 	if ((BN_Key->KCDSA_Q = CreateBigNum(tt + 1)) == NULL)	goto LABEL_END0;
 	if ((BN_Key->KCDSA_x = CreateBigNum(tt + 1)) == NULL)	goto LABEL_END0;
-	for (i = 0; i < (signed)(tt + 1); i++)
+	for (i = 0; i < (tt + 1); i++)
 	{
 		BN_Key->KCDSA_Q->pData[i] = 0;
 		BN_Key->KCDSA_x->pData[i] = 0;
@@ -58,21 +73,21 @@ unsigned int KCDSA_PRNG_SHA_224(
 	unsigned int tempLen = dSrcByteLen;
 	unsigned char *tempSrc = (unsigned char *)malloc((unsigned char)tempLen);
 
-	for (i = 0; i < dSrcByteLen; i++)
+    for (i = 0; (int)i < (int)dSrcByteLen; i++)
 		tempSrc[i] = pbSrc[i];
 
 	i = ((dDstBitLen + 7) & 0xFFFFFFF8) / 8;
-
+    
 	for (Count = 0;; Count++) {
 		SHA224_Init(SHA224_AlgInfo);
 		SHA224_Update(SHA224_AlgInfo, tempSrc, tempLen);
 		SHA224_Update(SHA224_AlgInfo, &Count, 1);
 		SHA224_Final(SHA224_AlgInfo, DigestValue);
-
-		if (i >= SHA224_DIGEST_VALUELEN) {
-			i -= SHA224_DIGEST_VALUELEN;
+        
+		if ((int)i >= SHA224_DIGEST_VALUELEN) {
+			i = i-SHA224_DIGEST_VALUELEN;
 			memcpy(pbDst + i, DigestValue, SHA224_DIGEST_VALUELEN);
-			if (i == 0)	break;
+			if ((int)i == 0)	break;
 		}
 		else {
 			memcpy(pbDst, DigestValue + SHA224_DIGEST_VALUELEN - i, i);
@@ -80,10 +95,10 @@ unsigned int KCDSA_PRNG_SHA_224(
 		}
 	}
 
-	i = dDstBitLen & 0x07;
-	if (i)
-		pbDst[0] &= ((unsigned int)1 << i) - 1;
-
+	i = (dDstBitLen&0xffffffff) & 0x07;
+	if ((int)i)
+		pbDst[0] = (pbDst[0]&0xffffffff) & ((((unsigned int)1 << (int)i)) - 1);
+    
 	free(tempSrc);
 
 	return CTR_SUCCESS;
@@ -122,10 +137,10 @@ unsigned int KCDSA_PRNG_SHA_256(
 			break;
 		}
 	}
-
-	i = dDstBitLen & 0x07;
-	if (i)
-		pbDst[0] &= (1 << i) - 1;
+    
+    i = (dDstBitLen&0xffffffff) & 0x07;
+	if ((int)i)
+		pbDst[0] = (pbDst[0]&0xffffffff) & ((((unsigned int)1 << (int)i)) - 1);
 
 	free(tempSrc);
 
@@ -142,7 +157,7 @@ unsigned int Generate_Random(
 	unsigned int HASH)
 {
 	int i, j;
-	unsigned int ret;
+	unsigned int ret = 0;
 	unsigned char *bzTmp1, *bzTmp2;
 
 	BIGNUM *VAL = NULL, *BN_Tmp1 = NULL;
@@ -224,7 +239,7 @@ unsigned int Generate_Random(
 
 	for (i = 0; i < (int)(XBitLen / 32); i++)
 		X[i] = BN_Tmp1->pData[i];
-
+	
 	free(bzTmp1);
 	free(bzTmp2);
 
@@ -236,14 +251,13 @@ LABEL_END:
 
 unsigned int KISA_KCDSA_GenerateKeyPair(
 	KISA_KCDSA		*KCDSA_Key,
-	unsigned char		*pbSrc,
-	unsigned int			dSrcByteLen,
-	unsigned int			qLen,
-	unsigned int			HASH)
+	unsigned char	*pbSrc,
+	unsigned int	dSrcByteLen,
+	unsigned int	qLen,
+	unsigned int	HASH)
 {
-	int j = 0;
 	unsigned int		i = 0;
-	unsigned int		ret;
+	unsigned int		ret = 0;
 	BIGNUM		*BN_Tmp1 = NULL;
 	BIGNUM		*XKEY = NULL;
 
@@ -252,12 +266,12 @@ unsigned int KISA_KCDSA_GenerateKeyPair(
 	i = KCDSA_Key->KCDSA_P->Length;
 	if ((BN_Tmp1 = CreateBigNum(i + 1)) == NULL)	goto LABEL_END;
 	if ((XKEY = CreateBigNum(qLen / 32)) == NULL)	goto LABEL_END;
-
+	
 	if (KCDSA_Key->KCDSA_x->Length == 0) {
-		// b ºñÆ®ÀÇ ÀÓÀÇÀÇ Á¤¼ö XKEY »ı¼º
+		// b ë¹„íŠ¸ì˜ ì„ì˜ì˜ ì •ìˆ˜ XKEY ìƒì„±
 		srand((unsigned)time(NULL));
 		ret = BN_Rand(XKEY, qLen);			GOTO_END;
-
+		
 		/*p = 2048, q = 224, SHA-224 test vector*/
 		/*XKEY->pData[0] = 0xa89150be;
 		XKEY->pData[1] = 0xeff64b4c;
@@ -304,17 +318,20 @@ unsigned int KISA_KCDSA_GenerateKeyPair(
 		XKEY->Length = 8;
 		XKEY->Space = 9;*/
 
-		// ÀüÀÚ¼­¸íÅ° x »ı¼º
+		// ì „ìì„œëª…í‚¤ x ìƒì„±
 		ret = Generate_Random(XKEY, pbSrc, dSrcByteLen, KCDSA_Key->KCDSA_x->pData, qLen, KCDSA_Key, HASH);
 		KCDSA_Key->KCDSA_x->Length = qLen / 32;
 	}
 
-	// xÀÇ ¿ª¿ø »ı¼º
+	ret = BN_ModInv(BN_Tmp1, KCDSA_Key->KCDSA_x, KCDSA_Key->KCDSA_Q);
+	GOTO_END;
+
+	// xì˜ ì—­ì› ìƒì„±
 	ret = BN_ModInv(BN_Tmp1, KCDSA_Key->KCDSA_x, KCDSA_Key->KCDSA_Q);	GOTO_END;
 
-	// ÀüÀÚ¼­¸í °ËÁõÅ° y »ı¼º(Y = G^{X^{-1} mod Q} mod P)
+	// ì „ìì„œëª… ê²€ì¦í‚¤ y ìƒì„±(Y = G^{X^{-1} mod Q} mod P)
 	ret = BN_ModExp(KCDSA_Key->KCDSA_y, KCDSA_Key->KCDSA_G, BN_Tmp1, KCDSA_Key->KCDSA_P);				GOTO_END;
-
+	
 LABEL_END:
 	if (BN_Tmp1 != NULL)		DestroyBigNum(BN_Tmp1);
 	if (XKEY != NULL)			DestroyBigNum(XKEY);
@@ -363,7 +380,7 @@ unsigned int KISA_KCDSA_sign(
 		ret = CTR_INVALID_ALG_PARAMS;
 		GOTO_END;
 	}
-
+	
 	if (kcdsa == NULL)	return CTR_INVALID_POINTER;
 
 	if (HASH == SHA224)
@@ -371,9 +388,9 @@ unsigned int KISA_KCDSA_sign(
 	else if (HASH == SHA256)
 		DigestLen = SHA256_DIGEST_VALUELEN;
 
-	qByteLen = (unsigned int)(DIGITSIZE) * (kcdsa->KCDSA_Q->Length); // QÀÇ ¹ÙÀÌÆ®´ÜÀ§ ±æÀÌ¸¦ ÀúÀå
+	qByteLen = (unsigned int)(DIGITSIZE) * (kcdsa->KCDSA_Q->Length); // Qì˜ ë°”ì´íŠ¸ë‹¨ìœ„ ê¸¸ì´ë¥¼ ì €ì¥
 
-	if (SignLen != NULL) { // »çÀÎÀÇ ±æÀÌ°¡ ÀÔ·ÂÀÌ ÀÖ´Â°æ¿ì
+	if (SignLen != NULL) { // ì‚¬ì¸ì˜ ê¸¸ì´ê°€ ì…ë ¥ì´ ìˆëŠ”ê²½ìš°
 		i = *SignLen;
 		if((HASH == SHA224 && qByteLen == 28) || (HASH == SHA256 && qByteLen == 32))
 			*SignLen = DigestLen + qByteLen;
@@ -382,21 +399,21 @@ unsigned int KISA_KCDSA_sign(
 		ret = CTR_BUFFER_TOO_SMALL;
 		if ((i != 0) && (i<*SignLen))			goto LABEL_END;
 	}
-	if (Signature == NULL)	return CTR_INVALID_POINTER; // »çÀÎÀÌ NULLÀÌ¸é ¿À·ù
+	if (Signature == NULL)	return CTR_INVALID_POINTER; // ì‚¬ì¸ì´ NULLì´ë©´ ì„±ê³µì ìœ¼ë¡œ ì¢…ë£Œ
 
-	if (MsgDigest == NULL)	return CTR_INVALID_POINTER; // MsgDigest°¡ NULLÀÌ¸é ¿À·ù
+	if (MsgDigest == NULL)	return CTR_INVALID_POINTER; // MsgDigestê°€ NULLì´ë©´ ì˜¤ë¥˜
 
 	ret = CTR_MEMORY_ALLOC_ERROR;
-	// PÀÇ Å©±â¸¸Å­  K¿Í Tmp1¿¡ °ø°£ ÇÒ´ç
+	// Pì˜ í¬ê¸°ë§Œí¼  Kì™€ Tmp1ì— ê³µê°„ í• ë‹¹
 	i = kcdsa->KCDSA_P->Length;
 	if ((BN_K = CreateBigNum(i + 1)) == NULL)		goto LABEL_END;
 	if ((BN_Tmp1 = CreateBigNum(i + 1)) == NULL)	goto LABEL_END;
-	// QÀÇ Å©±â¸¸Å­ S¿¡ °ø°£ ÇÒ´ç
+	// Qì˜ í¬ê¸°ë§Œí¼ Sì— ê³µê°„ í• ë‹¹
 	i = kcdsa->KCDSA_Q->Length;
 	if ((KCDSA_s = CreateBigNum(i + 1)) == NULL)	goto LABEL_END;
 	if ((KKEY = CreateBigNum(i + 1)) == NULL)		goto LABEL_END;
 
-	// step 1. ³­¼ö k¸¦ [1, Q-1]¿¡¼­ ÀÓÀÇ·Î ¼±ÅÃÇÑ´Ù.
+	// step 1. ë‚œìˆ˜ kë¥¼ [1, Q-1]ì—ì„œ ì„ì˜ë¡œ ì„ íƒí•œë‹¤.
 	srand((unsigned)time(NULL));
 	ret = BN_Rand(KKEY, 8 * qByteLen);	GOTO_END;
 	
@@ -445,22 +462,22 @@ unsigned int KISA_KCDSA_sign(
 	KKEY->pData[7] = 0xa3d070cb;
 	KKEY->Length = 8;
 	KKEY->Space = 9;*/
-
+		
 	ret = Generate_Random(KKEY, t_omgri, omgri_len, BN_K->pData, kcdsa->KCDSA_Q->Length * 32, kcdsa, HASH);
 	BN_K->Length = kcdsa->KCDSA_Q->Length;
 	BN_K->Space = kcdsa->KCDSA_Q->Length + 1;
 
-	// Q¿Í KÀÇ ±æÀÌ´Â °°À½.
-	// Q¿Í KÀÇ Å©±â¸¦ ºñ±³ÇØ¼­ K°¡ ´õ Å©¸é QÀ» »©ÁÖ´Â ¿¬»êÀ» ÇÔ.
+	// Qì™€ Kì˜ ê¸¸ì´ëŠ” ê°™ìŒ.
+	// Qì™€ Kì˜ í¬ê¸°ë¥¼ ë¹„êµí•´ì„œ Kê°€ ë” í¬ë©´ Qì„ ë¹¼ì£¼ëŠ” ì—°ì‚°ì„ í•¨.
 	if (BN_Cmp(BN_K, kcdsa->KCDSA_Q) >= 0) {
 		ret = BN_Sub(BN_K, BN_K, kcdsa->KCDSA_Q);						GOTO_END;
 	}
 
-	// step 2. W=G^K mod P¸¦ °è»êÇÑ´Ù.
+	// step 2. W=G^K mod Pë¥¼ ê³„ì‚°í•œë‹¤.
 	ret = BN_ModExp(BN_Tmp1, kcdsa->KCDSA_G, BN_K, kcdsa->KCDSA_P);		GOTO_END;
 
-	//	step 3. ¼­¸íÀÇ Ã¹ ºÎºĞ R=h(W)¸¦ °è»êÇÑ´Ù.
-	i = DIGITSIZE * kcdsa->KCDSA_P->Length; // ¹ÙÀÌÆ® ´ÜÀ§ ±æÀÌ
+	//	step 3. ì„œëª…ì˜ ì²« ë¶€ë¶„ R=h(W)ë¥¼ ê³„ì‚°í•œë‹¤.
+	i = DIGITSIZE * kcdsa->KCDSA_P->Length; // ë°”ì´íŠ¸ ë‹¨ìœ„ ê¸¸ì´
 	ret = BN2OS(BN_Tmp1, i, bzTmp);									GOTO_END;
 	j = i;
 	if (HASH == SHA224)
@@ -481,8 +498,8 @@ unsigned int KISA_KCDSA_sign(
 			memcpy(Signature, bzTmp, SHA256_DIGEST_VALUELEN);
 	}
 
-	// step 4. Z = Y mod 2^l
-	// step 5. h = Hash(Z||M)À» °è»êÇÑ´Ù.
+	// step 4. Z = Y mod 2^l(ì‚¬ì „ì— ê³„ì‚°ë˜ì–´ ìˆìŒ)
+	// step 5. h = Hash(Z||M)ì„ ê³„ì‚°í•œë‹¤.
 	hashTmp = (unsigned char*)malloc((64 + MsgDigestLen) * sizeof(unsigned char));
 	i = kcdsa->KCDSA_y->Length;
 	kcdsa->KCDSA_y->Length = 512 / BitsInDIGIT;
@@ -516,7 +533,7 @@ unsigned int KISA_KCDSA_sign(
 		SHA256_Final(&SHA256_AlgInfo, hashTmp);
 	}
 
-	// step 6. E = (R ^ H) mod Q¸¦ °è»êÇÑ´Ù.
+	// step 6. E = (R ^ H) mod Që¥¼ ê³„ì‚°í•œë‹¤.
 	if ((HASH == SHA224 && qByteLen == 28) || (HASH == SHA256 && qByteLen == 32))
 		for (i = 0; i < DigestLen; i++)	bzTmp[i] ^= hashTmp[i];
 	else
@@ -530,7 +547,7 @@ unsigned int KISA_KCDSA_sign(
 	ret = OS2BN(bzTmp, i, BN_Tmp1);							GOTO_END;
 	ret = BN_ModRed(BN_Tmp1, BN_Tmp1, kcdsa->KCDSA_Q);		GOTO_END;
 	
-	//	step 7. S = X(K-E) mod Q¸¦ °è»êÇÑ´Ù.
+	//	step 7. S = X(K-E) mod Që¥¼ ê³„ì‚°í•œë‹¤.
 	ret = BN_ModSub(BN_K, BN_K, BN_Tmp1, kcdsa->KCDSA_Q);			GOTO_END;
 	ret = BN_ModMul(KCDSA_s, kcdsa->KCDSA_x, BN_K, kcdsa->KCDSA_Q);	GOTO_END;
 
@@ -611,9 +628,9 @@ unsigned int KISA_KCDSA_verify(
 	ret = CTR_VERIFY_FAIL;
 	if (BN_Cmp(KCDSA_s, kcdsa->KCDSA_G) >= 0)			goto LABEL_END;
 
-	// step 1. ¼ö½ÅµÈ ¼­¸í {R', S'}¿¡ ´ëÇØ |R'|=LH, 0 < S' < Q ÀÓÀ» È®ÀÎÇÑ´Ù.
-	// step 2. Z = Y mod 2^l
-	// step 3. h = Hash(Z||M)À» °è»êÇÑ´Ù.
+	// step 1. ìˆ˜ì‹ ëœ ì„œëª… {R', S'}ì— ëŒ€í•´ |R'|=LH, 0 < S' < Q ì„ì„ í™•ì¸í•œë‹¤.
+	// step 2. Z = Y mod 2^l(ì‚¬ì „ì— ê³„ì‚°ë˜ì–´ ìˆìŒ)
+	// step 3. h = Hash(Z||M)ì„ ê³„ì‚°í•œë‹¤.
 	hashTmp = (unsigned char*)malloc((64 + MsgDigestLen) * sizeof(unsigned char));
 	i = kcdsa->KCDSA_y->Length;
 	kcdsa->KCDSA_y->Length = 512 / BitsInDIGIT;
@@ -635,7 +652,7 @@ unsigned int KISA_KCDSA_verify(
 		SHA256_Final(&SHA256_AlgInfo, hashTmp);
 	}
 
-	// step 4. E' = (R' ^ H') mod QÀ» °è»êÇÑ´Ù.
+	// step 4. E' = (R' ^ H') mod Qì„ ê³„ì‚°í•œë‹¤.
 	if ((HASH == SHA224 && qByteLen == 28) || (HASH == SHA256 && qByteLen == 32))
 		for (i = 0; i < DigestLen; i++)	bzTmp[i] ^= hashTmp[i];
 	else
@@ -646,12 +663,12 @@ unsigned int KISA_KCDSA_verify(
 	ret = OS2BN(bzTmp, i, BN_Tmp1);							GOTO_END;
 	ret = BN_ModRed(BN_Tmp1, BN_Tmp1, kcdsa->KCDSA_Q);		GOTO_END;
 
-	// step 5. W' = Y ^ {S'} G ^ {E'} mod P¸¦ °è»êÇÑ´Ù.
+	// step 5. W' = Y ^ {S'} G ^ {E'} mod Pë¥¼ ê³„ì‚°í•œë‹¤.
 	ret = BN_ModExp(BN_Tmp2, kcdsa->KCDSA_y, KCDSA_s, kcdsa->KCDSA_P);				GOTO_END;
 	ret = BN_ModExp(BN_Tmp3, kcdsa->KCDSA_G, BN_Tmp1, kcdsa->KCDSA_P);				GOTO_END;
 	ret = BN_ModMul(BN_Tmp1, BN_Tmp2, BN_Tmp3, kcdsa->KCDSA_P);						GOTO_END;
 
-	// step 6. h(W') = R'ÀÌ ¼º¸³ÇÏ´ÂÁö È®ÀÎÇÑ´Ù.
+	// step 6. h(W') = R'ì´ ì„±ë¦½í•˜ëŠ”ì§€ í™•ì¸í•œë‹¤.
 	i = DIGITSIZE * kcdsa->KCDSA_P->Length;
 	ret = BN2OS(BN_Tmp1, i, bzTmp);							GOTO_END;
 	j = i;
@@ -748,9 +765,9 @@ unsigned int KISA_KCDSA_GenerateParameters(
 	/*p = 2048, q = 256, SHA-256 test vector*/
 	//unsigned char		tSeed[256 / 8 + 4] = { 0xf7, 0x5a, 0xbd, 0xa0, 0x03, 0x2c, 0xe2, 0x18, 0xce, 0x04, 0xba, 0xf0, 0xa6, 0xdc, 0x92, 0xc8, 0x7e, 0xb4, 0x6a, 0xa0, 0x56, 0x8c, 0x42, 0x78, 0x2e, 0x64, 0x4c, 0xc2, 0xb8, 0x2e, 0x24, 0x9a };
 	/*p = 3072, q = 256, SHA-256 test vector*/
-	//unsigned char		tSeed[256 / 8 + 4] = { 0xb8, 0x56, 0x20, 0x16, 0x38, 0x55, 0xa7, 0xc0, 0x05, 0x76, 0x13, 0xdc, 0xd1, 0xf2, 0xae, 0x61, 0x80, 0xc4, 0x34, 0xd0, 0x98, 0x90, 0xea, 0x70, 0x22, 0x00, 0x83, 0xf2, 0x8d, 0x27, 0x54, 0xad };
-	unsigned int		i = 0, Count = 0, k = 0;
-	unsigned int		ret, temp_rand = 0;
+    //unsigned char		tSeed[256 / 8 + 4] = { 0xb8, 0x56, 0x20, 0x16, 0x38, 0x55, 0xa7, 0xc0, 0x05, 0x76, 0x13, 0xdc, 0xd1, 0xf2, 0xae, 0x61, 0x80, 0xc4, 0x34, 0xd0, 0x98, 0x90, 0xea, 0x70, 0x22, 0x00, 0x83, 0xf2, 0x8d, 0x27, 0x54, 0xad };
+	unsigned int		i = 0, Count = 0;
+	unsigned int		ret;
 	unsigned int		g[96];
 	/*p = 2048, q = 224, SHA-224 test vector*/
 	//unsigned int g[] = { 0x967500f2, 0x4ae06466, 0x8c2eb468, 0xc05a92f8, 0xc314fe16, 0x545cf834, 0x73320013, 0x2024bb80, 0xf8bb047b, 0x66e0db04, 0x629340c6, 0xecd4ec10, 0x046a12e8, 0x806cc64e, 0x59fc0842, 0xc01ad8a8, 0xb5c6285d, 0x3800b9a0, 0x586dd871, 0x9c8c85d0, 0x6e10c0da, 0xceb7b4fa, 0x5ffcb0a8, 0x80cf3ae4, 0x2f30525f, 0x6c1fb75c, 0x376a90e7, 0x6c1af700, 0xf858eca7, 0x12246fc6, 0xba7e782e, 0xf06dbc24, 0xc9888ea8, 0xc031eeba, 0x4568dc7d, 0x582d8950, 0xf9c038b1, 0x764675a0, 0xd85a401d, 0xc8fc9984, 0x462ceac2, 0x5263048e, 0x7354ace8, 0x40d3e2d0, 0x9be0a6db, 0x847b9b84, 0xfb5620bb, 0xc0b23380, 0xf89cd4fc, 0xbe143a82, 0x12609c96, 0x48998c38, 0x5d600a68, 0x00b51688, 0x31982079, 0xf088edf8, 0xca2c4805, 0x4a5e31a0, 0x581ea864, 0xf46c56c0, 0x1e008eaa, 0x9c0f5422, 0x87aca828, 0x8cd78a90 };
@@ -764,7 +781,7 @@ unsigned int KISA_KCDSA_GenerateParameters(
 	SHA224_ALG_INFO	SHA224_AlgInfo;
 	SHA256_ALG_INFO	SHA256_AlgInfo;
 	BIGNUM *KCDSA_J = NULL;
-
+    
 	if (kcdsa == NULL)	return CTR_INVALID_POINTER;
 
 	if ((PrimeBits < 2048) || (PrimeBits > 3072) || (PrimeBits % 256))
@@ -775,7 +792,7 @@ unsigned int KISA_KCDSA_GenerateParameters(
 	ret = CTR_MEMORY_ALLOC_ERROR;
 	if ((BN_Tmp1 = CreateBigNum(PrimeBits / 32 + 1)) == NULL)			goto LABEL_END;
 	if ((BN_Tmp2 = CreateBigNum(PrimeBits / 32 + 1)) == NULL)			goto LABEL_END;
-
+    
 	for (j = 0; j < (int)(PrimeBits / 32 + 2); j++)
 	{
 		BN_Tmp1->pData[j] = 0;
@@ -805,19 +822,19 @@ unsigned int KISA_KCDSA_GenerateParameters(
 		ret = CTR_INVALID_ALG_PARAMS;
 		GOTO_END;
 	}
-
-	// ¼Ò¼ö ½Ö (P, Q) »ı¼º
+    
+	// ì†Œìˆ˜ ìŒ (P, Q) ìƒì„±
 LABEL_Start:
 	for (;;) {
-		// Step 1. ºñÆ® ±æÀÌ |Q|ÀÎ ¹ÙÀÌÆ® ¿­ Seed¸¦ »ı¼ºÇÑ´Ù.
-		srand((unsigned)time(NULL) * k++);
+        // Step 1. ë¹„íŠ¸ ê¸¸ì´ |Q|ì¸ ë°”ì´íŠ¸ ì—´ Seedë¥¼ ìƒì„±í•œë‹¤.
+		srand((unsigned)time(NULL));
 		for (j = 0; j < (signed)(SubPrimeBits / 8); j++) {
 			tSeed[j] = rand();
 		}
-
+		
 		kcdsa->SeedLen = SubPrimeBits / 8;
-
-		// Step 2. Seed¸¦ ÀÏ¹æÇâ ÇÔ¼öÀÇ ÀÔ·ÂÀ¸·Î ÇÏ¿© ºñÆ® ±æÀÌ°¡ n = (|P|-|Q|-4)ÀÎ ³­¼ö U¸¦ »ı¼ºÇÑ´Ù. (U ¡ç PPGF(Seed, n))
+		
+		// Step 2. Seedë¥¼ ì¼ë°©í–¥ í•¨ìˆ˜ì˜ ì…ë ¥ìœ¼ë¡œ í•˜ì—¬ ë¹„íŠ¸ ê¸¸ì´ê°€ n = (|P|-|Q|-4)ì¸ ë‚œìˆ˜ Uë¥¼ ìƒì„±í•œë‹¤. (U â† PPGF(Seed, n))
 		if (HASH == SHA224)
 		{
 			ret = KCDSA_PRNG_SHA_224(&SHA224_AlgInfo, tSeed, kcdsa->SeedLen, bzTmp, PrimeBits - SubPrimeBits - 4);			GOTO_END;
@@ -826,14 +843,14 @@ LABEL_Start:
 		{
 			ret = KCDSA_PRNG_SHA_256(&SHA256_AlgInfo, tSeed, kcdsa->SeedLen, bzTmp, PrimeBits - SubPrimeBits - 4);			GOTO_END;
 		}
-
+        
 		ret = OS2BN(bzTmp, (PrimeBits - SubPrimeBits) / 8, BN_Tmp1);	GOTO_END;
 
-		// Step 3. UÀÇ »óÀ§¿¡ 4 ºñÆ® '1000'À» ºÙÀÌ°í ÃÖÇÏÀ§ ºñÆ®´Â 1·Î ¸¸µé¾î ÀÌ¸¦ J·Î µĞ´Ù.(J ¡ç 2^|P|-|Q|-1 ¡ı U ¡ı 1)
+		// Step 3. Uì˜ ìƒìœ„ì— 4 ë¹„íŠ¸ '1000'ì„ ë¶™ì´ê³  ìµœí•˜ìœ„ ë¹„íŠ¸ëŠ” 1ë¡œ ë§Œë“¤ì–´ ì´ë¥¼ Jë¡œ ë‘”ë‹¤.(J â† 2^|P|-|Q|-1 âˆ¨ U âˆ¨ 1)
 		SetBitDIGIT(BN_Tmp1->pData, PrimeBits - SubPrimeBits - 1);
 		SetBitDIGIT(BN_Tmp1->pData, 0);
 
-		// Step 4. °­ÇÑ ¼Ò¼ö ÆÇÁ¤ ¾Ë°í¸®ÁòÀ¸·Î J¸¦ ÆÇÁ¤ÇÏ¿© ¼Ò¼ö°¡ ¾Æ´Ï¸é Step 1·Î ÀÌµ¿
+		// Step 4. ê°•í•œ ì†Œìˆ˜ íŒì • ì•Œê³ ë¦¬ì¦˜ìœ¼ë¡œ Jë¥¼ íŒì •í•˜ì—¬ ì†Œìˆ˜ê°€ ì•„ë‹ˆë©´ Step 1ë¡œ ì´ë™
 		if (MillerRabin(BN_Tmp1) != CTR_SUCCESS)
 			goto LABEL_Start;
 		break;
@@ -845,50 +862,54 @@ LABEL_Start:
 		KCDSA_J->pData[j] = BN_Tmp1->pData[j];
 	KCDSA_J->Length = BN_Tmp1->Length;
 	KCDSA_J->Space = BN_Tmp1->Space;
-
-	// Step 5, 6. Count¸¦ 0À¸·Î µÎ°í Count¸¦ 1·Î Áõ°¡½ÃÅ²´Ù.
+    
+	// Step 5, 6. Countë¥¼ 0ìœ¼ë¡œ ë‘ê³  Countë¥¼ 1ë¡œ ì¦ê°€ì‹œí‚¨ë‹¤.
 	for (Count = 1; Count < (1 << 24); Count++) {
-		// Step 7. Count > 2^24ÀÌ¸é ´Ü°è 1·Î ÀÌµ¿
+		// Step 7. Count > 2^24ì´ë©´ ë‹¨ê³„ 1ë¡œ ì´ë™
 		if (Count == (1 << 24))	goto LABEL_Start;
 
-		// Step 8. Seed¿¡ Count¸¦ ¿¬Á¢ÇÑ °ÍÀ» ÀÏ¹æÇâ ÇÔ¼ö PPGFÀÇ ÀÔ·ÂÀ¸·Î ÇÏ¿© ºñÆ® ±æÀÌ°¡ |Q|ÀÎ ³­¼ö U¸¦ »ı¼ºÇÑ´Ù. (U ¡ç PPGF(Seed||Count, |Q|))
+		// Step 8. Seedì— Countë¥¼ ì—°ì ‘í•œ ê²ƒì„ ì¼ë°©í–¥ í•¨ìˆ˜ PPGFì˜ ì…ë ¥ìœ¼ë¡œ í•˜ì—¬ ë¹„íŠ¸ ê¸¸ì´ê°€ |Q|ì¸ ë‚œìˆ˜ Uë¥¼ ìƒì„±í•œë‹¤. (U â† PPGF(Seed||Count, |Q|))
 		BIG_W2B(Count, (&tSeed[kcdsa->SeedLen]));
 		tSeed[kcdsa->SeedLen] = 0;
 
-		if (HASH == SHA224)	{
+		if (HASH == SHA224)
+		{
 			ret = KCDSA_PRNG_SHA_224(&SHA224_AlgInfo, tSeed, kcdsa->SeedLen + 4, bzTmp, SubPrimeBits);			GOTO_END;
-		} else {
+		}
+		else
+		{
 			ret = KCDSA_PRNG_SHA_256(&SHA256_AlgInfo, tSeed, kcdsa->SeedLen + 4, bzTmp, SubPrimeBits);			GOTO_END;
 		}
 
 		ret = OS2BN(bzTmp, SubPrimeBits / 8, kcdsa->KCDSA_Q);	GOTO_END;
 
-		// Step 9. UÀÇ ÃÖ»óÀ§ ¹× ÃÖÇÏÀ§ ºñÆ®¸¦ 1·Î ¸¸µé¾î ÀÌ¸¦ Q·Î µĞ´Ù. (Q ¡ç 2^|Q|-1 ¡ı U ¡ı 1)
+		// Step 9. Uì˜ ìµœìƒìœ„ ë° ìµœí•˜ìœ„ ë¹„íŠ¸ë¥¼ 1ë¡œ ë§Œë“¤ì–´ ì´ë¥¼ Që¡œ ë‘”ë‹¤. (Q â† 2^|Q|-1 âˆ¨ U âˆ¨ 1)
 		SetBitDIGIT(kcdsa->KCDSA_Q->pData, SubPrimeBits - 1);
 		SetBitDIGIT(kcdsa->KCDSA_Q->pData, 0);
 
-		// Step 10. P ¡ç (2J|Q| + 1)ÀÇ ºñÆ® ±æÀÌ°¡ |P|º¸´Ù ±æ¸é ´Ü°è 6À¸·Î ÀÌµ¿
+		// Step 10. P â† (2J|Q| + 1)ì˜ ë¹„íŠ¸ ê¸¸ì´ê°€ |P|ë³´ë‹¤ ê¸¸ë©´ ë‹¨ê³„ 6ìœ¼ë¡œ ì´ë™
 		ret = BN_Mul(kcdsa->KCDSA_P, BN_Tmp1, kcdsa->KCDSA_Q);						GOTO_END;
 		if (CheckBitDIGIT(kcdsa->KCDSA_P->pData, PrimeBits - 1))
 			continue;
 		ret = BN_SHL(kcdsa->KCDSA_P, kcdsa->KCDSA_P, 1);					GOTO_END;
 		SetBitDIGIT(kcdsa->KCDSA_P->pData, 0);
 
-		// Step 11. °­ÇÑ ¼Ò¼ö ÆÇÁ¤ ¾Ë°í¸®ÁòÀ¸·Î Q¸¦ ÆÇÁ¤ÇÏ¿© ¼Ò¼ö°¡ ¾Æ´Ï¸é ´Ü°è 6À¸·Î ÀÌµ¿
+		// Step 11. ê°•í•œ ì†Œìˆ˜ íŒì • ì•Œê³ ë¦¬ì¦˜ìœ¼ë¡œ Që¥¼ íŒì •í•˜ì—¬ ì†Œìˆ˜ê°€ ì•„ë‹ˆë©´ ë‹¨ê³„ 6ìœ¼ë¡œ ì´ë™
 		if (MillerRabin(kcdsa->KCDSA_Q) != CTR_SUCCESS)	continue;
 
-		// Step 12. °­ÇÑ ¼Ò¼ö ÆÇÁ¤ ¾Ë°í¸®ÁòÀ¸·Î P¸¦ ÆÇÁ¤ÇÏ¿© ¼Ò¼ö°¡ ¾Æ´Ï¸é ´Ü°è 6À¸·Î ÀÌµ¿
+		// Step 12. ê°•í•œ ì†Œìˆ˜ íŒì • ì•Œê³ ë¦¬ì¦˜ìœ¼ë¡œ Pë¥¼ íŒì •í•˜ì—¬ ì†Œìˆ˜ê°€ ì•„ë‹ˆë©´ ë‹¨ê³„ 6ìœ¼ë¡œ ì´ë™
 		if (MillerRabin(kcdsa->KCDSA_P) == CTR_SUCCESS)	break;
 	}
 
-	// Step 13. ¼Ò¼ö P, Q, J¿Í Áõ°Å °ª Seed, Count¸¦ Ãâ·ÂÇÑ´Ù.
+    // Step 13. ì†Œìˆ˜ P, Q, Jì™€ ì¦ê±° ê°’ Seed, Countë¥¼ ì¶œë ¥í•œë‹¤.
 	kcdsa->Count = Count;
 
 	ret = BN_SHL(KCDSA_J, KCDSA_J, 1);								GOTO_END;
 
-	// »ı¼º¿ø g »ı¼º
+	// ìƒì„±ì› g ìƒì„±
 	for (;;) {
-		// Step 1. pº¸´Ù ÀÛÀº ÀÓÀÇÀÇ ¼ö h¸¦ »ı¼ºÇÑ´Ù.
+		// Step 1. pë³´ë‹¤ ì‘ì€ ì„ì˜ì˜ ìˆ˜ hë¥¼ ìƒì„±í•œë‹¤.
+		srand((unsigned)time(NULL));
 		for (i = 0; i < PrimeBits / 8; i++)
 			((unsigned char*)g)[i] = rand();
 
@@ -897,10 +918,10 @@ LABEL_Start:
 		BN_Tmp2->Length = PrimeBits / 32;
 		BN_Tmp2->Space = PrimeBits / 32 + 1;
 
-		// Step 2. G ¡ç h ^ 2J mod P¸¦ °è»êÇÑ´Ù
+		// Step 2. G â† h ^ 2J mod Pë¥¼ ê³„ì‚°í•œë‹¤
 		ret = BN_ModExp(kcdsa->KCDSA_G, BN_Tmp2, KCDSA_J, kcdsa->KCDSA_P);						GOTO_END;
 
-		// Step 3. G = 1ÀÌ¸é ´Ü°è 1·Î °£´Ù.
+		// Step 3. G = 1ì´ë©´ ë‹¨ê³„ 1ë¡œ ê°„ë‹¤.
 		if (BN_Cmp(kcdsa->KCDSA_G, &BN_One) != 0)
 			break;
 	}

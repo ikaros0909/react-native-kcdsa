@@ -28,11 +28,6 @@ extern "C" {
 /*************** Definitions / Macros  ************************************/
 #define DIGITSIZE			4
 #define BitsInDIGIT			32 //(8*DIGITSIZE)
-#define CheckBitDIGIT(A, k)	CHECK_BIT_D(A, k)
-#define SetBitDIGIT(A, k)	SET_BIT_D(A, k)
-
-#define isEven0(A)		( ( (A)[0]&1 )==0 )
-#define isOdd0(A)		( ( (A)[0]&1 )==1 )
 
 #define BN_MAX_BITS		3072			//	Long #의 최대 비트수 : 512/768/1024/2048//3072
 #define MaxDIGIT		96 //((BN_MAX_BITS-1)/BitsInDIGIT+1)	//	Long #의 최대 자리수
@@ -41,10 +36,9 @@ extern "C" {
 /*************** Macros ***************************************************/
 ////////	bit control macros	////////
 //	bit 반전
-#define NOT(x)				(~(x))
+
 //	check k-th bits of A (array of unsigned int)
 #define CHECK_BIT_B(A, k)	( 1 & ( (A)[(k)>>3] >> ((k) & ( 8-1)) ) )
-#define CHECK_BIT_D(A, k)	( 1 & ( (A)[(k)>>5] >> ((k) & (32-1)) ) )
 //	set k-th bits of A (array of unsigned int)
 #define SET_BIT_B(A, k)		(A)[(k)>>3] |= ((unsigned int)1 << ((k) & ( 8-1)) )
 #define SET_BIT_D(A, k)		(A)[(k)>>5] |= ((unsigned int)1 << ((k) & (32-1)) )
@@ -57,9 +51,7 @@ extern "C" {
 
 /*************** New Data Types *******************************************/
 ////////	Determine data types depand on the processor and compiler.
-//#define BOOL	int					//	1-bit data type
 #define BYTE		unsigned char		//	unsigned 1-byte data type
-//#define WORD	unsigned int		//	unsigned 4-bytes data type
 
 
 #if defined(_MSC_VER)
@@ -67,6 +59,7 @@ extern "C" {
 #else
 #define DWORD	unsigned long long	//	unsigned 8-bytes data type
 #endif
+
 
 #if defined(DWORD)
 #define DOUBLE_DIGIT	DWORD
@@ -95,7 +88,7 @@ extern "C" {
 #define ERROR_MemLen2				22	//	output : DataLen<=MemoryLen
 #define ERROR_OverModulus			23	//	modulus oper. : NO input > modulus
 #define CTR_BN_NEGATIVE_RESULT		24	//	음수는 지원하지 않음
-
+    
 /*************** Global Variables *****************************************/
 	extern BIGNUM	BN_Zero, BN_One, BN_Two;
 
@@ -108,7 +101,15 @@ extern "C" {
 	//########################################
 	//	BIGNUM의 지원 함수 
 	//########################################
-
+    
+    unsigned int CheckBitDIGIT(unsigned int *A, unsigned int k);
+    unsigned int CHECK_BIT_D(unsigned int *A, unsigned int k);
+    unsigned int NOT(unsigned x);
+    int isEven0(unsigned int *A);
+    int isOdd0(unsigned int *A);
+    
+    void SetBitDIGIT(unsigned int *A, unsigned int k);
+    
 	//	Create "BIGNUM" data and return the pointer
 	BIGNUM	*CreateBigNum(
 		unsigned int		dMemoryLen);	//	in unsigned ints

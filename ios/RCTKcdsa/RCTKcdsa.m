@@ -30,13 +30,14 @@ RCT_EXPORT_METHOD(_KISA_KCDSA_GenerateKeyPair:(NSInteger)hash
     // KCDSA 알고리즘의 키 쌍(개인키, 공개키) 생성 함수
     // hash (1:SHA_224, 2:SHA_256)
     
-    unsigned int ret = KISA_KCDSA_GenerateKeyPair(kcdsa, pbSrc, 160, qlen, SHA224);
+    unsigned int ret = KISA_KCDSA_GenerateKeyPair(kcdsa, pbSrc, 160, qlen, (unsigned int)hash);
     
     //  - 0 : 파라미터 생성 성공
     //  - 2 : 치명적인 오류 발생
     //  - 3 : 유효하지 않은 KCDSA 객체 포인터 입력
+    NSString *data = [NSString stringWithFormat:@"%d", ret];
 
-    resolve(ret);
+    resolve(data);
 }
 
 RCT_EXPORT_METHOD(_KISA_KCDSA_sign:(NSString *)msg hash:(NSInteger)hash
@@ -51,12 +52,13 @@ RCT_EXPORT_METHOD(_KISA_KCDSA_sign:(NSString *)msg hash:(NSInteger)hash
     NSInteger msg_length = n_msg.length;
     
     KISA_KCDSA_sign(kcdsa, n_msg, msg_length, sig, &siglen, hash, kInput, 20);
-    
     if (sig == nil) {
         reject(@"sign_fail", @"Sign failed", error);
     } else {
         // 전자서명값
-        resolve([CommonUtil toHex:sig]);
+        NSString *data = [NSString stringWithFormat:@"%@", [CommonUtil toHex:sig]];
+
+        resolve(data);
     }
 }
 
@@ -81,7 +83,9 @@ RCT_EXPORT_METHOD(_KISA_KCDSA_verify:(NSString *)msg sign:(NSString *)sign hash:
     //  - 2 : 치명적인 오류 발생
     //  - 3 : 유효하지 않은 KCDSA 구조체 포인터 입력
     //  - 4 : 유효하지 않은 알고리즘 파라미터 입력
-    resolve(ret);
+    NSString *data = [NSString stringWithFormat:@"%d", ret];
+    
+    resolve(data);
 }
 
 @end

@@ -9,12 +9,12 @@
 /* Begin PBXBuildFile section */
 		32D980E11BE9F11C00FA27E5 /* RCTKcdsa.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 32D980E01BE9F11C00FA27E5 /* RCTKcdsa.h */; };
 		32D980E31BE9F11C00FA27E5 /* RCTKcdsa.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D980E21BE9F11C00FA27E5 /* RCTKcdsa.m */; };
-		F00E187A24ECFE7900B4CFD1 /* kcdsa.c in Sources */ = {isa = PBXBuildFile; fileRef = F00E187124ECFE7900B4CFD1 /* kcdsa.c */; };
-		F00E187B24ECFE7900B4CFD1 /* sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = F00E187224ECFE7900B4CFD1 /* sha256.c */; };
-		F00E187C24ECFE7900B4CFD1 /* sha224.c in Sources */ = {isa = PBXBuildFile; fileRef = F00E187524ECFE7900B4CFD1 /* sha224.c */; };
-		F00E187D24ECFE7900B4CFD1 /* bignum.c in Sources */ = {isa = PBXBuildFile; fileRef = F00E187624ECFE7900B4CFD1 /* bignum.c */; };
 		F00E188124ECFF2D00B4CFD1 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F00E188024ECFF2D00B4CFD1 /* CommonUtil.m */; };
 		F00E188324ECFFEC00B4CFD1 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = F00E188224ECFFEC00B4CFD1 /* main.c */; };
+		F0B3F45A24EF920B0099542B /* sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = F0B3F45124EF920B0099542B /* sha256.c */; };
+		F0B3F45B24EF920B0099542B /* sha224.c in Sources */ = {isa = PBXBuildFile; fileRef = F0B3F45324EF920B0099542B /* sha224.c */; };
+		F0B3F45C24EF920B0099542B /* kcdsa.c in Sources */ = {isa = PBXBuildFile; fileRef = F0B3F45424EF920B0099542B /* kcdsa.c */; };
+		F0B3F45D24EF920B0099542B /* bignum.c in Sources */ = {isa = PBXBuildFile; fileRef = F0B3F45624EF920B0099542B /* bignum.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,18 +34,18 @@
 		32D980DD1BE9F11C00FA27E5 /* libRCTKcdsa.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTKcdsa.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		32D980E01BE9F11C00FA27E5 /* RCTKcdsa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTKcdsa.h; sourceTree = "<group>"; };
 		32D980E21BE9F11C00FA27E5 /* RCTKcdsa.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTKcdsa.m; sourceTree = "<group>"; };
-		F00E187024ECFE7900B4CFD1 /* kcdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kcdsa.h; sourceTree = "<group>"; };
-		F00E187124ECFE7900B4CFD1 /* kcdsa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kcdsa.c; sourceTree = "<group>"; };
-		F00E187224ECFE7900B4CFD1 /* sha256.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha256.c; sourceTree = "<group>"; };
-		F00E187324ECFE7900B4CFD1 /* bignum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bignum.h; sourceTree = "<group>"; };
-		F00E187424ECFE7900B4CFD1 /* type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = type.h; sourceTree = "<group>"; };
-		F00E187524ECFE7900B4CFD1 /* sha224.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha224.c; sourceTree = "<group>"; };
-		F00E187624ECFE7900B4CFD1 /* bignum.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bignum.c; sourceTree = "<group>"; };
-		F00E187724ECFE7900B4CFD1 /* sha224.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha224.h; sourceTree = "<group>"; };
-		F00E187824ECFE7900B4CFD1 /* sha256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha256.h; sourceTree = "<group>"; };
 		F00E187F24ECFF2D00B4CFD1 /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
 		F00E188024ECFF2D00B4CFD1 /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
 		F00E188224ECFFEC00B4CFD1 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		F0B3F45124EF920B0099542B /* sha256.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha256.c; sourceTree = "<group>"; };
+		F0B3F45224EF920B0099542B /* type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = type.h; sourceTree = "<group>"; };
+		F0B3F45324EF920B0099542B /* sha224.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha224.c; sourceTree = "<group>"; };
+		F0B3F45424EF920B0099542B /* kcdsa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kcdsa.c; sourceTree = "<group>"; };
+		F0B3F45524EF920B0099542B /* sha224.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha224.h; sourceTree = "<group>"; };
+		F0B3F45624EF920B0099542B /* bignum.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bignum.c; sourceTree = "<group>"; };
+		F0B3F45724EF920B0099542B /* bignum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bignum.h; sourceTree = "<group>"; };
+		F0B3F45824EF920B0099542B /* kcdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kcdsa.h; sourceTree = "<group>"; };
+		F0B3F45924EF920B0099542B /* sha256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha256.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,18 +88,18 @@
 		32D981161BE9F1B600FA27E5 /* lib */ = {
 			isa = PBXGroup;
 			children = (
+				F0B3F45624EF920B0099542B /* bignum.c */,
+				F0B3F45724EF920B0099542B /* bignum.h */,
+				F0B3F45424EF920B0099542B /* kcdsa.c */,
+				F0B3F45824EF920B0099542B /* kcdsa.h */,
+				F0B3F45324EF920B0099542B /* sha224.c */,
+				F0B3F45524EF920B0099542B /* sha224.h */,
+				F0B3F45124EF920B0099542B /* sha256.c */,
+				F0B3F45924EF920B0099542B /* sha256.h */,
+				F0B3F45224EF920B0099542B /* type.h */,
 				F00E188224ECFFEC00B4CFD1 /* main.c */,
 				F00E187F24ECFF2D00B4CFD1 /* CommonUtil.h */,
 				F00E188024ECFF2D00B4CFD1 /* CommonUtil.m */,
-				F00E187624ECFE7900B4CFD1 /* bignum.c */,
-				F00E187324ECFE7900B4CFD1 /* bignum.h */,
-				F00E187124ECFE7900B4CFD1 /* kcdsa.c */,
-				F00E187024ECFE7900B4CFD1 /* kcdsa.h */,
-				F00E187524ECFE7900B4CFD1 /* sha224.c */,
-				F00E187724ECFE7900B4CFD1 /* sha224.h */,
-				F00E187224ECFE7900B4CFD1 /* sha256.c */,
-				F00E187824ECFE7900B4CFD1 /* sha256.h */,
-				F00E187424ECFE7900B4CFD1 /* type.h */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -161,12 +161,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F00E187A24ECFE7900B4CFD1 /* kcdsa.c in Sources */,
-				F00E187D24ECFE7900B4CFD1 /* bignum.c in Sources */,
-				F00E187C24ECFE7900B4CFD1 /* sha224.c in Sources */,
-				F00E187B24ECFE7900B4CFD1 /* sha256.c in Sources */,
+				F0B3F45C24EF920B0099542B /* kcdsa.c in Sources */,
 				F00E188124ECFF2D00B4CFD1 /* CommonUtil.m in Sources */,
+				F0B3F45D24EF920B0099542B /* bignum.c in Sources */,
+				F0B3F45B24EF920B0099542B /* sha224.c in Sources */,
 				32D980E31BE9F11C00FA27E5 /* RCTKcdsa.m in Sources */,
+				F0B3F45A24EF920B0099542B /* sha256.c in Sources */,
 				F00E188324ECFFEC00B4CFD1 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

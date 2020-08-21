@@ -76,7 +76,7 @@ public class RCTKcdsa extends ReactContextBaseJavaModule {
 //            - 0 : 파라미터 생성 성공
 //            - 2 : 치명적인 오류 발생
 //            - 3 : 유효하지 않은 KCDSA 객체 포인터 입력
-            promise.resolve(ret);
+            promise.resolve(Integer.toString(ret));
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());
         }
@@ -110,7 +110,7 @@ public class RCTKcdsa extends ReactContextBaseJavaModule {
 //		    - 2 : 치명적인 오류 발생
 //		    - 3 : 유효하지 않은 KCDSA 구조체 포인터 입력
 //		    - 4 : 유효하지 않은 알고리즘 파라미터 입력
-            promise.resolve(ret);
+            promise.resolve(Integer.toString(ret));
         } catch (Exception e) {
             promise.reject("-1", e.getMessage());
         }

@@ -38,7 +38,7 @@ RCT_EXPORT_METHOD(_KISA_KCDSA_GenerateKeyPair:(NSInteger)hash
     resolve(ret);
 }
 
-RCT_EXPORT_METHOD(_KISA_KCDSA_sign:(NSString *)msg (NSInteger)hash
+RCT_EXPORT_METHOD(_KISA_KCDSA_sign:(NSString *)msg hash:(NSInteger)hash
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     
@@ -57,7 +57,7 @@ RCT_EXPORT_METHOD(_KISA_KCDSA_sign:(NSString *)msg (NSInteger)hash
     }
 }
 
-RCT_EXPORT_METHOD(_KISA_KCDSA_verify:(NSString *)msg sign:(NSString *)sign (NSInteger)hash
+RCT_EXPORT_METHOD(_KISA_KCDSA_verify:(NSString *)msg sign:(NSString *)sign hash:(NSInteger)hash
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject) {
     

@@ -68,7 +68,6 @@ extern "C" {
 #define DWORD	unsigned long long	//	unsigned 8-bytes data type
 #endif
 
-
 #if defined(DWORD)
 #define DOUBLE_DIGIT	DWORD
 #endif

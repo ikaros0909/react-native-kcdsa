@@ -1,6 +1,6 @@
 # KCDSA
 
-대한민국 표준 전자서명 알고리즘 - KCDSA
+대한민국 표준 전자서명 알고리즘 - KCDSA (Korean Certificate-based Digital Signature Algorithm)
 
 ## Installation
 

@@ -62,13 +62,16 @@ public class RCTKcdsa extends ReactContextBaseJavaModule {
             0x19, (byte)0xa9, (byte)0x97, (byte)0xa4
     };
     int plen = 2048, qlen = 224;
-    KISA_KCDSA kcdsa = new KISA_KCDSA();
+
+    KISA_KCDSA kcdsa = null;
 
     @ReactMethod
     public void KISA_KCDSA_GenerateKeyPair(int hash, Promise promise) {
         // KCDSA 알고리즘의 키 쌍(개인키, 공개키) 생성 함수
         // hash (1:SHA_224, 2:SHA_256)
         try {
+            kcdsa = new KISA_KCDSA();
+
             KCDSA.KISA_KCDSA_CreateObject(kcdsa);
             KCDSA.KISA_KCDSA_set_params(kcdsa, p, 64, q, 7, g, 64, null, 0, null, 0);
             int ret = KCDSA.KISA_KCDSA_GenerateKeyPair(kcdsa, pbSrc, 160, qlen, hash);

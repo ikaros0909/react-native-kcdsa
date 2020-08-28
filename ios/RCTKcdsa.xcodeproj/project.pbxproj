@@ -9,12 +9,11 @@
 /* Begin PBXBuildFile section */
 		32D980E11BE9F11C00FA27E5 /* RCTKcdsa.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 32D980E01BE9F11C00FA27E5 /* RCTKcdsa.h */; };
 		32D980E31BE9F11C00FA27E5 /* RCTKcdsa.m in Sources */ = {isa = PBXBuildFile; fileRef = 32D980E21BE9F11C00FA27E5 /* RCTKcdsa.m */; };
-		F00E188124ECFF2D00B4CFD1 /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F00E188024ECFF2D00B4CFD1 /* CommonUtil.m */; };
-		F00E188324ECFFEC00B4CFD1 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = F00E188224ECFFEC00B4CFD1 /* main.c */; };
-		F0B3F45A24EF920B0099542B /* sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = F0B3F45124EF920B0099542B /* sha256.c */; };
-		F0B3F45B24EF920B0099542B /* sha224.c in Sources */ = {isa = PBXBuildFile; fileRef = F0B3F45324EF920B0099542B /* sha224.c */; };
-		F0B3F45C24EF920B0099542B /* kcdsa.c in Sources */ = {isa = PBXBuildFile; fileRef = F0B3F45424EF920B0099542B /* kcdsa.c */; };
-		F0B3F45D24EF920B0099542B /* bignum.c in Sources */ = {isa = PBXBuildFile; fileRef = F0B3F45624EF920B0099542B /* bignum.c */; };
+		F015862D24F8E403006FABAF /* bignum.c in Sources */ = {isa = PBXBuildFile; fileRef = F015862524F8E403006FABAF /* bignum.c */; };
+		F015862E24F8E403006FABAF /* sha224.c in Sources */ = {isa = PBXBuildFile; fileRef = F015862824F8E403006FABAF /* sha224.c */; };
+		F015862F24F8E403006FABAF /* sha256.c in Sources */ = {isa = PBXBuildFile; fileRef = F015862924F8E403006FABAF /* sha256.c */; };
+		F015863024F8E403006FABAF /* kcdsa.c in Sources */ = {isa = PBXBuildFile; fileRef = F015862C24F8E403006FABAF /* kcdsa.c */; };
+		F015863224F8E466006FABAF /* CommonUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F015863124F8E466006FABAF /* CommonUtil.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -34,18 +33,17 @@
 		32D980DD1BE9F11C00FA27E5 /* libRCTKcdsa.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTKcdsa.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		32D980E01BE9F11C00FA27E5 /* RCTKcdsa.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTKcdsa.h; sourceTree = "<group>"; };
 		32D980E21BE9F11C00FA27E5 /* RCTKcdsa.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTKcdsa.m; sourceTree = "<group>"; };
-		F00E187F24ECFF2D00B4CFD1 /* CommonUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
-		F00E188024ECFF2D00B4CFD1 /* CommonUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
-		F00E188224ECFFEC00B4CFD1 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
-		F0B3F45124EF920B0099542B /* sha256.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha256.c; sourceTree = "<group>"; };
-		F0B3F45224EF920B0099542B /* type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = type.h; sourceTree = "<group>"; };
-		F0B3F45324EF920B0099542B /* sha224.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha224.c; sourceTree = "<group>"; };
-		F0B3F45424EF920B0099542B /* kcdsa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kcdsa.c; sourceTree = "<group>"; };
-		F0B3F45524EF920B0099542B /* sha224.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha224.h; sourceTree = "<group>"; };
-		F0B3F45624EF920B0099542B /* bignum.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bignum.c; sourceTree = "<group>"; };
-		F0B3F45724EF920B0099542B /* bignum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bignum.h; sourceTree = "<group>"; };
-		F0B3F45824EF920B0099542B /* kcdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kcdsa.h; sourceTree = "<group>"; };
-		F0B3F45924EF920B0099542B /* sha256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha256.h; sourceTree = "<group>"; };
+		F015862424F8E403006FABAF /* sha224.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha224.h; sourceTree = "<group>"; };
+		F015862524F8E403006FABAF /* bignum.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = bignum.c; sourceTree = "<group>"; };
+		F015862624F8E403006FABAF /* kcdsa.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kcdsa.h; sourceTree = "<group>"; };
+		F015862724F8E403006FABAF /* bignum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bignum.h; sourceTree = "<group>"; };
+		F015862824F8E403006FABAF /* sha224.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha224.c; sourceTree = "<group>"; };
+		F015862924F8E403006FABAF /* sha256.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sha256.c; sourceTree = "<group>"; };
+		F015862A24F8E403006FABAF /* sha256.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sha256.h; sourceTree = "<group>"; };
+		F015862B24F8E403006FABAF /* type.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = type.h; sourceTree = "<group>"; };
+		F015862C24F8E403006FABAF /* kcdsa.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = kcdsa.c; sourceTree = "<group>"; };
+		F015863124F8E466006FABAF /* CommonUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CommonUtil.m; sourceTree = "<group>"; };
+		F015863324F8E477006FABAF /* CommonUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CommonUtil.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,18 +86,17 @@
 		32D981161BE9F1B600FA27E5 /* lib */ = {
 			isa = PBXGroup;
 			children = (
-				F0B3F45624EF920B0099542B /* bignum.c */,
-				F0B3F45724EF920B0099542B /* bignum.h */,
-				F0B3F45424EF920B0099542B /* kcdsa.c */,
-				F0B3F45824EF920B0099542B /* kcdsa.h */,
-				F0B3F45324EF920B0099542B /* sha224.c */,
-				F0B3F45524EF920B0099542B /* sha224.h */,
-				F0B3F45124EF920B0099542B /* sha256.c */,
-				F0B3F45924EF920B0099542B /* sha256.h */,
-				F0B3F45224EF920B0099542B /* type.h */,
-				F00E188224ECFFEC00B4CFD1 /* main.c */,
-				F00E187F24ECFF2D00B4CFD1 /* CommonUtil.h */,
-				F00E188024ECFF2D00B4CFD1 /* CommonUtil.m */,
+				F015862524F8E403006FABAF /* bignum.c */,
+				F015862724F8E403006FABAF /* bignum.h */,
+				F015862C24F8E403006FABAF /* kcdsa.c */,
+				F015862624F8E403006FABAF /* kcdsa.h */,
+				F015862824F8E403006FABAF /* sha224.c */,
+				F015862424F8E403006FABAF /* sha224.h */,
+				F015862924F8E403006FABAF /* sha256.c */,
+				F015862A24F8E403006FABAF /* sha256.h */,
+				F015862B24F8E403006FABAF /* type.h */,
+				F015863124F8E466006FABAF /* CommonUtil.m */,
+				F015863324F8E477006FABAF /* CommonUtil.h */,
 			);
 			path = lib;
 			sourceTree = "<group>";
@@ -161,13 +158,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0B3F45C24EF920B0099542B /* kcdsa.c in Sources */,
-				F00E188124ECFF2D00B4CFD1 /* CommonUtil.m in Sources */,
-				F0B3F45D24EF920B0099542B /* bignum.c in Sources */,
-				F0B3F45B24EF920B0099542B /* sha224.c in Sources */,
+				F015863024F8E403006FABAF /* kcdsa.c in Sources */,
+				F015862E24F8E403006FABAF /* sha224.c in Sources */,
 				32D980E31BE9F11C00FA27E5 /* RCTKcdsa.m in Sources */,
-				F0B3F45A24EF920B0099542B /* sha256.c in Sources */,
-				F00E188324ECFFEC00B4CFD1 /* main.c in Sources */,
+				F015862F24F8E403006FABAF /* sha256.c in Sources */,
+				F015863224F8E466006FABAF /* CommonUtil.m in Sources */,
+				F015862D24F8E403006FABAF /* bignum.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
